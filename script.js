@@ -13,7 +13,7 @@ function makeImg(bg, text, w, h) {
   return c.toDataURL();
 }
 
-var professionals = JSON.parse(localStorage.getItem('chakwalProsV6')) || [
+var professionals = JSON.parse(localStorage.getItem('chakwalProsV7')) || [
   {
     isDemo: true,
     name: "Ustad Tariq Solar & Electric",
@@ -65,7 +65,7 @@ function displayPros(list) {
       : '<img src="' + pro.mediaUrl + '">';
 
     var demoBadge = pro.isDemo ? '<span class="demo-tag">DEMO</span>' : '';
-    var waLink = 'https://whatsapp.com' + pro.phone;
+    var waLink = 'whatsapp://send?phone=' + pro.phone;
 
     container.innerHTML += 
       '<div class="card">' +
@@ -85,7 +85,7 @@ function displayPros(list) {
           '<p>' + pro.desc + '</p>' +
         '</div>' +
         '<div class="card-actions">' +
-          '<a href="' + waLink + '" target="_blank" class="btn btn-whatsapp">WhatsApp</a>' +
+          '<a href="' + waLink + '" class="btn btn-whatsapp">WhatsApp</a>' +
           '<a href="tel:+' + pro.phone + '" class="btn btn-call">Call Now</a>' +
         '</div>' +
       '</div>';
@@ -129,7 +129,7 @@ function addProfessional(e) {
         mediaType: mediaFile.type.startsWith('video') ? 'video' : 'image',
         mediaUrl: ev2.target.result
       });
-      localStorage.setItem('chakwalProsV6', JSON.stringify(professionals));
+      localStorage.setItem('chakwalProsV7', JSON.stringify(professionals));
       displayPros(professionals);
       closeModal();
       document.getElementById('proForm').reset();
