@@ -1,21 +1,23 @@
-let professionals = JSON.parse(localStorage.getItem('chakwalPros')) || [
+let professionals = JSON.parse(localStorage.getItem('chakwalProsV2')) || [
   {
     isDemo: true,
-    name: "Sample: Solar & Electrician (Demo)",
+    name: "Ustad Tariq Mehmood",
     category: "Electrician & Solar",
     tehsil: "Kallar Kahar",
-    phone: "",
-    desc: "Ye ek demo profile hai. Aapki profile bhi isi tarah tasveer, kaam ki tafseel aur WhatsApp button ke sath dikhegi.",
+    phone: "923000000000",
+    desc: "Solar system installation, inverter setting aur gharelu bijli ke tamam kaam tasalli se kiye jate hain.",
+    avatarUrl: "https://unsplash.com",
     mediaType: "image",
     mediaUrl: "https://unsplash.com"
   },
   {
     isDemo: true,
-    name: "Sample: Event Photographer (Demo)",
+    name: "Ali Raza Studio",
     category: "Photographer & Events",
     tehsil: "Chakwal City",
-    phone: "",
-    desc: "Ye ek demo profile hai. Apna asli kaam aur WhatsApp number register karne ke liye upar yellow button dabayein.",
+    phone: "923000000000",
+    desc: "Wedding photography, drone shoots aur events coverage poore Zila Chakwal mein.",
+    avatarUrl: "https://unsplash.com",
     mediaType: "image",
     mediaUrl: "https://unsplash.com"
   }
@@ -29,25 +31,25 @@ function displayPros(list) {
       ? '<video src="' + pro.mediaUrl + '" controls></video>' 
       : '<img src="' + pro.mediaUrl + '">';
 
-    const demoBadge = pro.isDemo 
-      ? '<span style="background:#dc3545; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; margin-left:5px;">DEMO</span>' 
-      : '';
-
-    const actionButtons = pro.isDemo
-      ? '<button onclick="openModal()" class="btn" style="background:#6c757d; border:none; cursor:pointer;">Ye Demo Hai - Apna Kaam Add Karein</button>'
-      : '<a href="https://wa.me' + pro.phone + '" target="_blank" class="btn btn-whatsapp">WhatsApp</a>' +
-        '<a href="tel:+' + pro.phone + '" class="btn btn-call">Call Now</a>';
+    const demoBadge = pro.isDemo ? '<span class="demo-tag">DEMO</span>' : '';
 
     container.innerHTML += 
       '<div class="card">' +
+        demoBadge +
         '<div class="media-preview">' + media + '</div>' +
         '<div class="card-header">' +
-          '<span class="badge">' + pro.category + '</span>' + demoBadge +
+          '<span class="badge">' + pro.category + '</span>' +
           '<span class="tehsil-tag">' + pro.tehsil + '</span>' +
-          '<h3>' + pro.name + '</h3>' +
+          '<div class="profile-row">' +
+            '<img src="' + pro.avatarUrl + '" class="avatar">' +
+            '<h3>' + pro.name + '</h3>' +
+          '</div>' +
           '<p>' + pro.desc + '</p>' +
         '</div>' +
-        '<div class="card-actions">' + actionButtons + '</div>' +
+        '<div class="card-actions">' +
+          '<a href="https://wa.me' + pro.phone + '" target="_blank" class="btn btn-whatsapp">WhatsApp</a>' +
+          '<a href="tel:+' + pro.phone + '" class="btn btn-call">Call Now</a>' +
+        '</div>' +
       '</div>';
   });
 }
@@ -66,28 +68,34 @@ function filterPros() {
 
 function addProfessional(e) {
   e.preventDefault();
-  const file = document.getElementById('proMedia').files;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    professionals.unshift({
-      isDemo: false,
-      name: document.getElementById('proName').value,
-      category: document.getElementById('proCategory').value,
-      tehsil: document.getElementById('proTehsil').value,
-      phone: document.getElementById('proPhone').value,
-      desc: document.getElementById('proDesc').value,
-      mediaType: file.type.startsWith('video') ? 'video' : 'image',
-      mediaUrl: ev.target.result
-    });
-    localStorage.setItem('chakwalPros', JSON.stringify(professionals));
-    displayPros(professionals);
-    closeModal();
-    document.getElementById('proForm').reset();
+  const avatarFile = document.getElementById('proAvatar').files;
+  const mediaFile = document.getElementById('proMedia').files;
+  
+  const reader1 = new FileReader();
+  reader1.onload = function(ev1) {
+    const reader2 = new FileReader();
+    reader2.onload = function(ev2) {
+      professionals.unshift({
+        isDemo: false,
+        name: document.getElementById('proName').value,
+        category: document.getElementById('proCategory').value,
+        tehsil: document.getElementById('proTehsil').value,
+        phone: document.getElementById('proPhone').value,
+        desc: document.getElementById('proDesc').value,
+        avatarUrl: ev1.target.result,
+        mediaType: mediaFile.type.startsWith('video') ? 'video' : 'image',
+        mediaUrl: ev2.target.result
+      });
+      localStorage.setItem('chakwalProsV2', JSON.stringify(professionals));
+      displayPros(professionals);
+      closeModal();
+      document.getElementById('proForm').reset();
+    };
+    if (mediaFile) reader2.readAsDataURL(mediaFile);
   };
-  if (file) reader.readAsDataURL(file);
+  if (avatarFile) reader1.readAsDataURL(avatarFile);
 }
 
 function openModal() { document.getElementById('registerModal').style.display = 'block'; }
 function closeModal() { document.getElementById('registerModal').style.display = 'none'; }
 displayPros(professionals);
-      
