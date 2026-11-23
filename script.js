@@ -1,4 +1,3 @@
-// Har device/browser ke liye ek unique secret ID banti hai
 var myDeviceId = localStorage.getItem('chakwalDeviceId');
 if (!myDeviceId) {
   myDeviceId = 'dev_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
@@ -14,7 +13,7 @@ function enableAdmin() {
     if (code === "7860") {
       isAdmin = true;
       displayPros(professionals);
-      alert("Admin Mode On! Ab aap kisi bhi profile ko delete/edit kar sakte hain.");
+      alert("Admin Mode On!");
     }
     tapCount = 0;
   }
@@ -32,7 +31,7 @@ function makeImg(bg, text, w, h) {
   return c.toDataURL();
 }
 
-var professionals = JSON.parse(localStorage.getItem('chakwalProsV9')) || [
+var professionals = JSON.parse(localStorage.getItem('chakwalProsV10')) || [
   {
     id: "demo_1",
     ownerId: "system",
@@ -78,7 +77,6 @@ function displayPros(list) {
     var demoBadge = pro.isDemo ? '<span class="demo-tag">DEMO</span>' : '';
     var waLink = 'whatsapp://send?phone=' + pro.phone;
     
-    // Sirf us bande ko buttons dikhenge jis ki apni profile hai (ya Admin ko)
     var canEdit = (!pro.isDemo && pro.ownerId === myDeviceId) || isAdmin;
     var ownerBtns = canEdit ? 
       '<div class="owner-actions">' +
@@ -130,7 +128,7 @@ function filterPros() {
 function deletePro(index) {
   if (confirm("Kya aap waqai apni is profile ko delete karna chahte hain?")) {
     professionals.splice(index, 1);
-    localStorage.setItem('chakwalProsV9', JSON.stringify(professionals));
+    localStorage.setItem('chakwalProsV10', JSON.stringify(professionals));
     displayPros(professionals);
   }
 }
@@ -155,8 +153,8 @@ function editPro(index) {
 function saveProfessional(e) {
   e.preventDefault();
   var idx = parseInt(document.getElementById('editIndex').value);
-  var avatarFile = document.getElementById('proAvatar').files;
-  var mediaFile = document.getElementById('proMedia').files;
+  var avatarFile = document.getElementById('proAvatar').files.item(0);
+  var mediaFile = document.getElementById('proMedia').files.item(0);
 
   function finishSave(avUrl, medUrl, medType) {
     var data = {
@@ -179,7 +177,11 @@ function saveProfessional(e) {
     } else {
       professionals[idx] = data;
     }
-    localStorage.setItem('chakwalProsV9', JSON.stringify(professionals));
+    try {
+      localStorage.setItem('chakwalProsV10', JSON.stringify(professionals));
+    } catch (err) {
+      alert("File size bara hone ki wajah se temporary save hui hai. Cloud jodne par ye masla khatam ho jayega!");
+    }
     displayPros(professionals);
     closeModal();
   }
@@ -222,4 +224,3 @@ function openModal() {
 }
 function closeModal() { document.getElementById('registerModal').style.display = 'none'; }
 displayPros(professionals);
-      
