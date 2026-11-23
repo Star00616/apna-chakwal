@@ -15,7 +15,7 @@
 </header>
 
 <div class="filters">
-  <input type="text" id="searchInput" placeholder="Kaam search karein..." onkeyup="filterPros()">
+  <input type="text" id="searchInput" placeholder="Kaam ya naam search karein..." onkeyup="filterPros()">
   <select id="tehsilFilter" onchange="filterPros()">
     <option value="All">Tamam Tehsils</option>
     <option value="Chakwal City">Chakwal City</option>
@@ -60,8 +60,13 @@
       </select>
       <input type="number" id="proPhone" required placeholder="WhatsApp: 923001234567">
       <textarea id="proDesc" rows="2" required placeholder="Apne kaam ki tafseel..."></textarea>
-      <label style="font-size:12px;">Kaam ki Photo ya Video:</label>
+      
+      <label style="font-size:12px; font-weight:bold;">1. Apni Profile Photo (DP):</label>
+      <input type="file" id="proAvatar" accept="image/*" required>
+      
+      <label style="font-size:12px; font-weight:bold;">2. Apne Kaam ki Photo ya Video:</label>
       <input type="file" id="proMedia" accept="image/*,video/*" required>
+      
       <button type="submit" class="submit-btn">Profile Live Karein</button>
     </form>
   </div>
@@ -69,5 +74,4 @@
 
 <script src="script.js"></script>
 </body>
-        </html>
-
+</html>
