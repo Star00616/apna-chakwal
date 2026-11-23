@@ -35,22 +35,25 @@ function loadPros() {
     }).catch(() => { pros = demoPros; showPros(pros); });
 }
 
-function syncCloud(cb) {
+async function syncCloud() {
   var clean = pros.filter(p => !p.isDemo);
-  fetch(BIN_URL, {
+  var res = await fetch(BIN_URL, {
     method: "PUT",
     headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY },
     body: JSON.stringify(clean.length ? clean : [{init: true}])
-  }).then(() => { if(cb) cb(); showPros(pros); });
+  });
+  var data = await res.json();
+  if (!res.ok) throw new Error("Database Error: " + (data.message || res.status));
 }
 
-function uploadCloud(file) {
+async function uploadCloud(file) {
   var fd = new FormData();
   fd.append("file", file);
   fd.append("upload_preset", UPLOAD_PRESET);
-  return fetch("https://cloudinary.com" + CLOUD_NAME + "/auto/upload", { method: "POST", body: fd })
-    .then(r => r.json())
-    .then(d => ({ type: file.type.startsWith('video') ? 'video' : 'image', url: d.secure_url }));
+  var res = await fetch("https://cloudinary.com" + CLOUD_NAME + "/auto/upload", { method: "POST", body: fd });
+  var d = await res.json();
+  if (!res.ok) throw new Error("Cloudinary Error: " + (d.error ? d.error.message : "Upload failed"));
+  return { type: file.type.startsWith('video') ? 'video' : 'image', url: d.secure_url };
 }
 
 function showPros(list) {
@@ -70,11 +73,11 @@ function openReviews(i) {
   document.getElementById('reviewModal').style.display = 'block';
 }
 function closeReviews() { document.getElementById('reviewModal').style.display = 'none'; }
-function submitReview(e) {
+async function submitReview(e) {
   e.preventDefault(); var i = document.getElementById('reviewProIndex').value;
   if(!pros[i].reviews) pros[i].reviews = [];
   pros[i].reviews.unshift({user:document.getElementById('reviewerName').value, stars:document.getElementById('reviewStars').value, comment:document.getElementById('reviewComment').value});
-  document.getElementById('reviewForm').reset(); openReviews(i); syncCloud();
+  document.getElementById('reviewForm').reset(); openReviews(i); await syncCloud(); showPros(pros);
 }
 
 function openGallery(i) {
@@ -89,7 +92,7 @@ function filterPros() {
   showPros(pros.filter(p=>(p.name.toLowerCase().includes(s)||p.desc.toLowerCase().includes(s)||p.location.toLowerCase().includes(s))&&(t==='All'||p.tehsil===t)&&(st==='All'||p.serviceType===st)&&(c==='All'||p.category===c)));
 }
 
-function delPro(i) { if(confirm("Delete karein?")){ pros.splice(i,1); syncCloud(); } }
+async function delPro(i) { if(confirm("Delete karein?")){ pros.splice(i,1); await syncCloud(); showPros(pros); } }
 function editPro(i) {
   var p=pros[i]; document.getElementById('editIndex').value=i; document.getElementById('proName').value=p.name; document.getElementById('proCategory').value=p.category; document.getElementById('proTehsil').value=p.tehsil; document.getElementById('proServiceType').value=p.serviceType; document.getElementById('proLocation').value=p.location; document.getElementById('proPhone').value=p.phone; document.getElementById('proDesc').value=p.desc; document.getElementById('registerModal').style.display='block';
 }
@@ -97,21 +100,29 @@ function editPro(i) {
 async function saveProfessional(e) {
   e.preventDefault();
   var btn = document.getElementById('submitBtn'); btn.innerText = "Upload ho raha hai... Sabar karein"; btn.disabled = true;
-  var idx = parseInt(document.getElementById('editIndex').value);
-  var avF = document.getElementById('proAvatar').files.item(0);
-  var mF = document.getElementById('proMedia').files;
-  
-  var avUrl = avF ? (await uploadCloud(avF)).url : (idx !== -1 ? pros[idx].avatarUrl : '');
-  var ml = idx !== -1 ? pros[idx].mediaList : [];
-  if (mF.length) {
-    ml = [];
-    for (var i = 0; i < mF.length; i++) ml.push(await uploadCloud(mF.item(i)));
+  try {
+    var idx = parseInt(document.getElementById('editIndex').value);
+    var avF = document.getElementById('proAvatar').files.item(0);
+    var mF = document.getElementById('proMedia').files;
+    
+    var avUrl = avF ? (await uploadCloud(avF)).url : (idx !== -1 ? pros[idx].avatarUrl : '');
+    var ml = idx !== -1 ? pros[idx].mediaList : [];
+    if (mF.length) {
+      ml = [];
+      for (var i = 0; i < mF.length; i++) ml.push(await uploadCloud(mF.item(i)));
+    }
+    
+    var d = { id:Date.now(), oid:idx===-1?myId:pros[idx].oid, isDemo:false, name:document.getElementById('proName').value, category:document.getElementById('proCategory').value, tehsil:document.getElementById('proTehsil').value, serviceType:document.getElementById('proServiceType').value, location:document.getElementById('proLocation').value, phone:document.getElementById('proPhone').value, desc:document.getElementById('proDesc').value, avatarUrl:avUrl, mediaList:ml, reviews:idx===-1?[]:pros[idx].reviews };
+    pros = pros.filter(p => !p.isDemo);
+    if (idx === -1) pros.unshift(d); else pros[idx] = d;
+    await syncCloud();
+    showPros(pros);
+    closeModal();
+    alert("Mubarak ho! Aapki profile live ho gayi hai!");
+  } catch (err) {
+    alert("Masla aaya: " + err.message);
   }
-  
-  var d = { id:Date.now(), oid:idx===-1?myId:pros[idx].oid, isDemo:false, name:document.getElementById('proName').value, category:document.getElementById('proCategory').value, tehsil:document.getElementById('proTehsil').value, serviceType:document.getElementById('proServiceType').value, location:document.getElementById('proLocation').value, phone:document.getElementById('proPhone').value, desc:document.getElementById('proDesc').value, avatarUrl:avUrl, mediaList:ml, reviews:idx===-1?[]:pros[idx].reviews };
-  pros = pros.filter(p => !p.isDemo);
-  if (idx === -1) pros.unshift(d); else pros[idx] = d;
-  syncCloud(() => { btn.innerText = "Profile Live Karein"; btn.disabled = false; closeModal(); alert("Mubarak ho! Aapki profile poore Zila Chakwal ke liye live ho gayi hai!"); });
+  btn.innerText = "Profile Live Karein"; btn.disabled = false;
 }
 
 function openModal() { document.getElementById('editIndex').value="-1"; document.getElementById('proForm').reset(); document.getElementById('registerModal').style.display='block'; }
