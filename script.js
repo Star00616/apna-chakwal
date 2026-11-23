@@ -15,8 +15,8 @@ function enableAdmin() {
 function mkImg(c, t, w, h) {
   var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
   var x = cv.getContext('2d'); x.fillStyle = c; x.fillRect(0, 0, w, h);
-  x.fillStyle = '#fff'; x.font = 'bold ' + (h/7) + 'px sans-serif';
-  x.textAlign = 'center'; x.fillText(t, w/2, h/2); return cv.toDataURL();
+  x.fillStyle = '#fff'; x.font = 'bold ' + Math.floor(h/7) + 'px sans-serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, w/2, h/2); return cv.toDataURL();
 }
 
 var demoPros = [
@@ -59,7 +59,8 @@ async function uploadCloud(file) {
 function showPros(list) {
   var box = document.getElementById('prosContainer'); box.innerHTML = '';
   list.forEach(function(p) {
-    var idx = pros.indexOf(p), m = p.mediaList.item ? p.mediaList.item(0) : p.mediaList;
+    var idx = pros.indexOf(p);
+    var m = p.mediaList.slice(0, 1).pop();
     var mHtml = m.type === 'video' ? '<video src="'+m.url+'" muted></video>' : '<img src="'+m.url+'">';
     var avg = p.reviews && p.reviews.length ? (p.reviews.reduce((a,b)=>a+Number(b.stars),0)/p.reviews.length).toFixed(1) : 'New';
     var btns = ((!p.isDemo && p.oid === myId) || isAdmin) ? '<div class="owner-actions"><button onclick="editPro('+idx+')" class="btn btn-edit">Edit</button><button onclick="delPro('+idx+')" class="btn btn-delete">Delete</button></div>' : '';
@@ -128,4 +129,4 @@ async function saveProfessional(e) {
 function openModal() { document.getElementById('editIndex').value="-1"; document.getElementById('proForm').reset(); document.getElementById('registerModal').style.display='block'; }
 function closeModal() { document.getElementById('registerModal').style.display='none'; }
 loadPros();
-    
+  
