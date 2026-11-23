@@ -3,35 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apna Chakwal Pros</title>
+  <title>Apna Chakwal Pros - Zila Chakwal Service Directory</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
   <h1>Apna Chakwal Pros</h1>
-  <p>Zila Chakwal ke Har Kaam ke Mahir Afraad</p>
-  <button class="add-btn" onclick="openModal()">+ Apna Kaam Register Karein</button>
+  <p>Zila Chakwal ke Har Kaam ke Mahir Afraad aur Dukaanein</p>
+  <button class="add-btn" onclick="openModal()">+ Apna Kaam / Shop Register Karein</button>
 </header>
 
 <div class="filters">
-  <input type="text" id="searchInput" placeholder="Kaam ya naam search karein..." onkeyup="filterPros()">
+  <input type="text" id="searchInput" placeholder="Kaam, dukaan ya ilaka search karein..." onkeyup="filterPros()">
   <select id="tehsilFilter" onchange="filterPros()">
-    <option value="All">Tamam Tehsils</option>
+    <option value="All">Tamam Tehsils (Zila Chakwal)</option>
     <option value="Chakwal City">Chakwal City</option>
     <option value="Kallar Kahar">Kallar Kahar</option>
     <option value="Choa Saidan Shah">Choa Saidan Shah</option>
     <option value="Talagang">Talagang</option>
     <option value="Lawa">Lawa</option>
   </select>
+  <select id="serviceTypeFilter" onchange="filterPros()">
+    <option value="All">Shop aur Home Service (Dono)</option>
+    <option value="Ghar Aa Kar Kaam (Home Service)">Ghar Aa Kar Kaam (Door-to-Door)</option>
+    <option value="Shop / Dukaan">Shop / Dukaan</option>
+    <option value="Shop + Home Service">Shop + Home Service (Dono)</option>
+  </select>
   <select id="categoryFilter" onchange="filterPros()">
-    <option value="All">Tamam Categories</option>
+    <option value="All">Tamam Categories (All Professions)</option>
     <option value="Electrician & Solar">Electrician & Solar</option>
-    <option value="Plumber & Carpenter">Plumber & Carpenter</option>
-    <option value="AC & Fridge Mechanic">AC & Fridge Mechanic</option>
-    <option value="Web & Graphic Designer">Web & Graphic Designer</option>
-    <option value="Photographer & Events">Photographer & Events</option>
-    <option value="Rent a Car">Rent a Car</option>
+    <option value="Plumber & Sanitary">Plumber & Sanitary</option>
+    <option value="Mistri & Labour (Mazdoor)">Mistri & Labour (Mazdoor)</option>
+    <option value="Carpenter (Tarkhan)">Carpenter (Tarkhan)</option>
+    <option value="Painter & Interior">Painter & Interior</option>
+    <option value="AC, Fridge & Washing Machine">AC, Fridge & Washing Machine</option>
+    <option value="Mobile & Laptop Repairing">Mobile & Laptop Repairing</option>
+    <option value="Car & Bike Mechanic">Car & Bike Mechanic</option>
+    <option value="Welder & Steel Works">Welder & Steel Works</option>
+    <option value="Tailor (Darzi)">Tailor (Darzi)</option>
+    <option value="Doctor, Clinic & Medical">Doctor, Clinic & Medical</option>
+    <option value="Home Tutor & Academy">Home Tutor & Academy</option>
+    <option value="Photographer & Videographer">Photographer & Videographer</option>
+    <option value="Catering & Events">Catering & Events</option>
+    <option value="Rent a Car & Transport">Rent a Car & Transport</option>
+    <option value="Web, Graphic & Digital">Web, Graphic & Digital</option>
+    <option value="Beauty Parlor & Salon">Beauty Parlor & Salon</option>
+    <option value="Property & Real Estate">Property & Real Estate</option>
   </select>
 </div>
 
@@ -40,17 +58,31 @@
 <div class="modal" id="registerModal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <h3>Apni Profile Banayein</h3>
+    <h3>Apni Profile / Shop Register Karein</h3>
     <form id="proForm" onsubmit="addProfessional(event)">
-      <input type="text" id="proName" required placeholder="Aapka Poora Naam">
+      <input type="text" id="proName" required placeholder="Aapka Naam ya Dukaan ka Naam">
+      
       <select id="proCategory" required>
         <option value="Electrician & Solar">Electrician & Solar</option>
-        <option value="Plumber & Carpenter">Plumber & Carpenter</option>
-        <option value="AC & Fridge Mechanic">AC & Fridge Mechanic</option>
-        <option value="Web & Graphic Designer">Web & Graphic Designer</option>
-        <option value="Photographer & Events">Photographer & Events</option>
-        <option value="Rent a Car">Rent a Car</option>
+        <option value="Plumber & Sanitary">Plumber & Sanitary</option>
+        <option value="Mistri & Labour (Mazdoor)">Mistri & Labour (Mazdoor)</option>
+        <option value="Carpenter (Tarkhan)">Carpenter (Tarkhan)</option>
+        <option value="Painter & Interior">Painter & Interior</option>
+        <option value="AC, Fridge & Washing Machine">AC, Fridge & Washing Machine</option>
+        <option value="Mobile & Laptop Repairing">Mobile & Laptop Repairing</option>
+        <option value="Car & Bike Mechanic">Car & Bike Mechanic</option>
+        <option value="Welder & Steel Works">Welder & Steel Works</option>
+        <option value="Tailor (Darzi)">Tailor (Darzi)</option>
+        <option value="Doctor, Clinic & Medical">Doctor, Clinic & Medical</option>
+        <option value="Home Tutor & Academy">Home Tutor & Academy</option>
+        <option value="Photographer & Videographer">Photographer & Videographer</option>
+        <option value="Catering & Events">Catering & Events</option>
+        <option value="Rent a Car & Transport">Rent a Car & Transport</option>
+        <option value="Web, Graphic & Digital">Web, Graphic & Digital</option>
+        <option value="Beauty Parlor & Salon">Beauty Parlor & Salon</option>
+        <option value="Property & Real Estate">Property & Real Estate</option>
       </select>
+
       <select id="proTehsil" required>
         <option value="Chakwal City">Chakwal City</option>
         <option value="Kallar Kahar">Kallar Kahar</option>
@@ -58,10 +90,18 @@
         <option value="Talagang">Talagang</option>
         <option value="Lawa">Lawa</option>
       </select>
-      <input type="number" id="proPhone" required placeholder="WhatsApp: 923001234567">
-      <textarea id="proDesc" rows="2" required placeholder="Apne kaam ki tafseel..."></textarea>
+
+      <select id="proServiceType" required>
+        <option value="Ghar Aa Kar Kaam (Home Service)">Ghar Aa Kar Kaam (Door-to-Door)</option>
+        <option value="Shop / Dukaan">Shop / Dukaan Hai</option>
+        <option value="Shop + Home Service">Shop + Home Service (Dono)</option>
+      </select>
+
+      <input type="text" id="proLocation" required placeholder="Shop Address ya Ilaka (e.g. Main Bazaar Kallar Kahar)">
+      <input type="number" id="proPhone" required placeholder="WhatsApp Number: 923001234567">
+      <textarea id="proDesc" rows="2" required placeholder="Apne kaam aur timing ki tafseel..."></textarea>
       
-      <label style="font-size:12px; font-weight:bold;">1. Apni Profile Photo (DP):</label>
+      <label style="font-size:12px; font-weight:bold;">1. Profile Photo ya Shop ki Tasveer (DP):</label>
       <input type="file" id="proAvatar" accept="image/*" required>
       
       <label style="font-size:12px; font-weight:bold;">2. Apne Kaam ki Photo ya Video:</label>
