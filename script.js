@@ -1,4 +1,13 @@
-let professionals = JSON.parse(localStorage.getItem('chakwalProsV4')) || [
+const avatar1 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='100' height='100'><rect width='100' height='100' fill='%23198754'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='sans-serif'>TM</text></svg>";
+const media1 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='600' height='350'><rect width='600' height='350' fill='%23146c43'/><text x='50%' y='50%' font-size='28' fill='white' text-anchor='middle' font-family='sans-serif'>Solar &amp; Electric Work (Demo)</text></svg>";
+
+const avatar2 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='100' height='100'><rect width='100' height='100' fill='%230d6efd'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='sans-serif'>BM</text></svg>";
+const media2 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='600' height='350'><rect width='600' height='350' fill='%230a58ca'/><text x='50%' y='50%' font-size='28' fill='white' text-anchor='middle' font-family='sans-serif'>Mobile Repairing Shop (Demo)</text></svg>";
+
+const avatar3 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='100' height='100'><rect width='100' height='100' fill='%23d63384'/><text x='50%' y='55%' font-size='40' fill='white' text-anchor='middle' font-family='sans-serif'>AM</text></svg>";
+const media3 = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='600' height='350'><rect width='600' height='350' fill='%23ab296a'/><text x='50%' y='50%' font-size='28' fill='white' text-anchor='middle' font-family='sans-serif'>Mistri &amp; Labour Team (Demo)</text></svg>";
+
+let professionals = JSON.parse(localStorage.getItem('chakwalProsV5')) || [
   {
     isDemo: true,
     name: "Ustad Tariq Solar & Electric",
@@ -8,9 +17,9 @@ let professionals = JSON.parse(localStorage.getItem('chakwalProsV4')) || [
     location: "Kallar Kahar aur qareebi gaon",
     phone: "923000000000",
     desc: "Solar system installation, inverter setting aur gharelu bijli ke tamam kaam ghar aa kar kiye jate hain.",
-    avatarUrl: "https://ui-avatars.com",
+    avatarUrl: avatar1,
     mediaType: "image",
-    mediaUrl: "https://placehold.co"
+    mediaUrl: media1
   },
   {
     isDemo: true,
@@ -21,9 +30,9 @@ let professionals = JSON.parse(localStorage.getItem('chakwalProsV4')) || [
     location: "Main Mobile Market, Talagang Chowk, Chakwal",
     phone: "923000000000",
     desc: "Har qisam ke mobile panel, charging jack, aur software ka kaam foran aur guarantee ke sath.",
-    avatarUrl: "https://ui-avatars.com",
+    avatarUrl: avatar2,
     mediaType: "image",
-    mediaUrl: "https://placehold.co"
+    mediaUrl: media2
   },
   {
     isDemo: true,
@@ -34,9 +43,9 @@ let professionals = JSON.parse(localStorage.getItem('chakwalProsV4')) || [
     location: "Poore Tehsil Talagang aur Lawa mein dastiyab",
     phone: "923000000000",
     desc: "Makaan ki tameer, plaster, tile work aur rozana mazdoori (labour) ke liye rabta karein.",
-    avatarUrl: "https://ui-avatars.com",
+    avatarUrl: avatar3,
     mediaType: "image",
-    mediaUrl: "https://placehold.co"
+    mediaUrl: media3
   }
 ];
 
@@ -112,7 +121,7 @@ function addProfessional(e) {
         mediaType: mediaFile.type.startsWith('video') ? 'video' : 'image',
         mediaUrl: ev2.target.result
       });
-      localStorage.setItem('chakwalProsV4', JSON.stringify(professionals));
+      localStorage.setItem('chakwalProsV5', JSON.stringify(professionals));
       displayPros(professionals);
       closeModal();
       document.getElementById('proForm').reset();
