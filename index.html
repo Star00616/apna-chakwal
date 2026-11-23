@@ -55,6 +55,7 @@
 
 <div class="container" id="prosContainer"></div>
 
+<!-- Add / Edit Modal -->
 <div class="modal" id="registerModal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -105,11 +106,45 @@
       <label style="font-size:12px; font-weight:bold;">1. Profile Photo ya Shop ki Tasveer (DP):</label>
       <input type="file" id="proAvatar" accept="image/*">
       
-      <label style="font-size:12px; font-weight:bold;">2. Apne Kaam ki Photo ya Video:</label>
-      <input type="file" id="proMedia" accept="image/*,video/*">
+      <label style="font-size:12px; font-weight:bold;">2. Apne Kaam ki Photos ya Videos (1 se zyada select kar sakte hain):</label>
+      <input type="file" id="proMedia" accept="image/*,video/*" multiple>
       
       <button type="submit" class="submit-btn" id="submitBtn">Profile Live Karein</button>
     </form>
+  </div>
+</div>
+
+<!-- Portfolio Gallery Modal -->
+<div class="modal" id="galleryModal">
+  <div class="modal-content" style="max-width:650px;">
+    <span class="close" onclick="closeGallery()">&times;</span>
+    <h3 id="galleryTitle" style="margin-bottom:5px; color:#198754;">Kaam ki Gallery</h3>
+    <p id="gallerySubtitle" style="font-size:12px; color:#666; margin-bottom:15px;"></p>
+    <div id="galleryItems" class="gallery-grid"></div>
+  </div>
+</div>
+
+<!-- Reviews Modal -->
+<div class="modal" id="reviewModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeReviews()">&times;</span>
+    <h3 id="reviewTitle" style="color:#198754; margin-bottom:10px;">Customer Reviews</h3>
+    
+    <form id="reviewForm" onsubmit="submitReview(event)" style="background:#f8f9fa; padding:12px; border-radius:8px; margin-bottom:15px;">
+      <input type="hidden" id="reviewProIndex">
+      <input type="text" id="reviewerName" required placeholder="Aapka Naam">
+      <select id="reviewStars" required>
+        <option value="5">⭐⭐⭐⭐⭐ (5 - Zabardast Kaam)</option>
+        <option value="4">⭐⭐⭐⭐ (4 - Acha Kaam)</option>
+        <option value="3">⭐⭐⭐ (3 - Theek Thaak)</option>
+        <option value="2">⭐⭐ (2 - Munasib Nahi)</option>
+        <option value="1">⭐ (1 - Kharab Tajurba)</option>
+      </select>
+      <textarea id="reviewComment" rows="2" required placeholder="Inke kaam ke baray mein apni raye likhein..."></textarea>
+      <button type="submit" class="submit-btn" style="background:#ffc107; color:#000;">Review Post Karein</button>
+    </form>
+
+    <div id="reviewsList" class="reviews-list"></div>
   </div>
 </div>
 
