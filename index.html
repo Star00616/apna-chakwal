@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apna Chakwal Pros</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Apna Chakwal Pros</h1>
+  <p>Zila Chakwal ke Har Kaam ke Mahir Afraad</p>
+  <button class="add-btn" onclick="openModal()">+ Apna Kaam Register Karein</button>
+</header>
+
+<div class="filters">
+  <input type="text" id="searchInput" placeholder="Kaam search karein..." onkeyup="filterPros()">
+  <select id="tehsilFilter" onchange="filterPros()">
+    <option value="All">Tamam Tehsils</option>
+    <option value="Chakwal City">Chakwal City</option>
+    <option value="Kallar Kahar">Kallar Kahar</option>
+    <option value="Choa Saidan Shah">Choa Saidan Shah</option>
+    <option value="Talagang">Talagang</option>
+    <option value="Lawa">Lawa</option>
+  </select>
+  <select id="categoryFilter" onchange="filterPros()">
+    <option value="All">Tamam Categories</option>
+    <option value="Electrician & Solar">Electrician & Solar</option>
+    <option value="Plumber & Carpenter">Plumber & Carpenter</option>
+    <option value="AC & Fridge Mechanic">AC & Fridge Mechanic</option>
+    <option value="Web & Graphic Designer">Web & Graphic Designer</option>
+    <option value="Photographer & Events">Photographer & Events</option>
+    <option value="Rent a Car">Rent a Car</option>
+  </select>
+</div>
+
+<div class="container" id="prosContainer"></div>
+
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Apni Profile Banayein</h3>
+    <form id="proForm" onsubmit="addProfessional(event)">
+      <input type="text" id="proName" required placeholder="Aapka Poora Naam">
+      <select id="proCategory" required>
+        <option value="Electrician & Solar">Electrician & Solar</option>
+        <option value="Plumber & Carpenter">Plumber & Carpenter</option>
+        <option value="AC & Fridge Mechanic">AC & Fridge Mechanic</option>
+        <option value="Web & Graphic Designer">Web & Graphic Designer</option>
+        <option value="Photographer & Events">Photographer & Events</option>
+        <option value="Rent a Car">Rent a Car</option>
+      </select>
+      <select id="proTehsil" required>
+        <option value="Chakwal City">Chakwal City</option>
+        <option value="Kallar Kahar">Kallar Kahar</option>
+        <option value="Choa Saidan Shah">Choa Saidan Shah</option>
+        <option value="Talagang">Talagang</option>
+        <option value="Lawa">Lawa</option>
+      </select>
+      <input type="number" id="proPhone" required placeholder="WhatsApp: 923001234567">
+      <textarea id="proDesc" rows="2" required placeholder="Apne kaam ki tafseel..."></textarea>
+      <label style="font-size:12px;">Kaam ki Photo ya Video:</label>
+      <input type="file" id="proMedia" accept="image/*,video/*" required>
+      <button type="submit" class="submit-btn">Profile Live Karein</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+        </html>
 
