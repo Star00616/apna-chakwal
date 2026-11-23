@@ -1,226 +1,66 @@
-var myDeviceId = localStorage.getItem('chakwalDeviceId');
-if (!myDeviceId) {
-  myDeviceId = 'dev_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-  localStorage.setItem('chakwalDeviceId', myDeviceId);
-}
-
-var isAdmin = false;
-var tapCount = 0;
+var myId = localStorage.getItem('cid') || ('u' + Date.now());
+localStorage.setItem('cid', myId);
+var isAdmin = false, taps = 0;
 function enableAdmin() {
-  tapCount++;
-  if (tapCount >= 5) {
-    var code = prompt("Admin Code:");
-    if (code === "7860") {
-      isAdmin = true;
-      displayPros(professionals);
-      alert("Admin Mode On!");
-    }
-    tapCount = 0;
-  }
+  if (++taps >= 5 && prompt("Admin Code:") === "7860") { isAdmin = true; showPros(pros); }
 }
-
-function makeImg(bg, text, w, h) {
-  var c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  var ctx = c.getContext('2d');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold ' + Math.floor(h / 7) + 'px sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(text, w / 2, h / 2);
-  return c.toDataURL();
+function mkImg(c, t, w, h) {
+  var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  var x = cv.getContext('2d'); x.fillStyle = c; x.fillRect(0, 0, w, h);
+  x.fillStyle = '#fff'; x.font = 'bold ' + (h/7) + 'px sans-serif';
+  x.textAlign = 'center'; x.fillText(t, w/2, h/2); return cv.toDataURL();
 }
-
-var professionals = JSON.parse(localStorage.getItem('chakwalProsV10')) || [
-  {
-    id: "demo_1",
-    ownerId: "system",
-    isDemo: true,
-    name: "Ustad Tariq Solar & Electric",
-    category: "Electrician & Solar",
-    tehsil: "Kallar Kahar",
-    serviceType: "Ghar Aa Kar Kaam (Home Service)",
-    location: "Kallar Kahar aur qareebi gaon",
-    phone: "923000000000",
-    desc: "Solar system installation, inverter setting aur gharelu bijli ke tamam kaam ghar aa kar kiye jate hain.",
-    avatarUrl: makeImg('#198754', 'TM', 120, 120),
-    mediaType: "image",
-    mediaUrl: makeImg('#146c43', 'Solar & Electric Work (Demo)', 600, 320)
-  },
-  {
-    id: "demo_2",
-    ownerId: "system",
-    isDemo: true,
-    name: "Bismillah Mobile Repairing Lab",
-    category: "Mobile & Laptop Repairing",
-    tehsil: "Chakwal City",
-    serviceType: "Shop / Dukaan",
-    location: "Main Mobile Market, Talagang Chowk, Chakwal",
-    phone: "923000000000",
-    desc: "Har qisam ke mobile panel, charging jack, aur software ka kaam foran aur guarantee ke sath.",
-    avatarUrl: makeImg('#0d6efd', 'BM', 120, 120),
-    mediaType: "image",
-    mediaUrl: makeImg('#0a58ca', 'Mobile Repairing Shop (Demo)', 600, 320)
-  }
+var pros = JSON.parse(localStorage.getItem('cPros13')) || [
+  { id: 1, oid: "sys", isDemo: true, name: "Ustad Tariq Solar", category: "Electrician & Solar", tehsil: "Kallar Kahar", serviceType: "Ghar Aa Kar Kaam (Home Service)", location: "Kallar Kahar", phone: "923000000000", desc: "Solar aur bijli ke kaam.", avatarUrl: mkImg('#198754','TM',100,100), mediaList: [{type:"image",url:mkImg('#146c43','Solar Work (Demo)',500,300)}], reviews: [{user:"Asif",stars:5,comment:"Bohat acha kaam kiya."}] },
+  { id: 2, oid: "sys", isDemo: true, name: "Bismillah Mobile Lab", category: "Mobile & Laptop Repairing", tehsil: "Chakwal City", serviceType: "Shop / Dukaan", location: "Talagang Chowk Chakwal", phone: "923000000000", desc: "Mobile repairing shop.", avatarUrl: mkImg('#0d6efd','BM',100,100), mediaList: [{type:"image",url:mkImg('#0a58ca','Mobile Shop (Demo)',500,300)}], reviews: [] }
 ];
-
-function displayPros(list) {
-  var container = document.getElementById('prosContainer');
-  container.innerHTML = '';
-  for (var i = 0; i < list.length; i++) {
-    var pro = list[i];
-    var realIndex = professionals.indexOf(pro);
-    var media = pro.mediaType === 'video' 
-      ? '<video src="' + pro.mediaUrl + '" controls></video>' 
-      : '<img src="' + pro.mediaUrl + '">';
-
-    var demoBadge = pro.isDemo ? '<span class="demo-tag">DEMO</span>' : '';
-    var waLink = 'whatsapp://send?phone=' + pro.phone;
-    
-    var canEdit = (!pro.isDemo && pro.ownerId === myDeviceId) || isAdmin;
-    var ownerBtns = canEdit ? 
-      '<div class="owner-actions">' +
-        '<button onclick="editPro(' + realIndex + ')" class="btn btn-edit">✏️ Edit</button>' +
-        '<button onclick="deletePro(' + realIndex + ')" class="btn btn-delete">🗑️ Delete</button>' +
-      '</div>' : '';
-
-    container.innerHTML += 
-      '<div class="card">' +
-        demoBadge +
-        '<div class="media-preview">' + media + '</div>' +
-        '<div class="card-header">' +
-          '<div class="tags-row">' +
-            '<span class="badge">' + pro.category + '</span>' +
-            '<span class="tehsil-tag">' + pro.tehsil + '</span>' +
-          '</div>' +
-          '<span class="service-tag">' + pro.serviceType + '</span>' +
-          '<div class="profile-row">' +
-            '<img src="' + pro.avatarUrl + '" class="avatar">' +
-            '<h3>' + pro.name + '</h3>' +
-          '</div>' +
-          '<div class="location-text">📍 ' + pro.location + '</div>' +
-          '<p>' + pro.desc + '</p>' +
-        '</div>' +
-        '<div class="card-actions">' +
-          '<a href="' + waLink + '" class="btn btn-whatsapp">WhatsApp</a>' +
-          '<a href="tel:+' + pro.phone + '" class="btn btn-call">Call Now</a>' +
-        '</div>' +
-        ownerBtns +
-      '</div>';
-  }
-}
-
-function filterPros() {
-  var s = document.getElementById('searchInput').value.toLowerCase();
-  var t = document.getElementById('tehsilFilter').value;
-  var st = document.getElementById('serviceTypeFilter').value;
-  var c = document.getElementById('categoryFilter').value;
-  
-  var filtered = professionals.filter(function(p) {
-    return (p.name.toLowerCase().includes(s) || p.desc.toLowerCase().includes(s) || p.location.toLowerCase().includes(s)) &&
-      (t === 'All' || p.tehsil === t) &&
-      (st === 'All' || p.serviceType === st) &&
-      (c === 'All' || p.category === c);
+function showPros(list) {
+  var box = document.getElementById('prosContainer'); box.innerHTML = '';
+  list.forEach(function(p) {
+    var idx = pros.indexOf(p), m = p.mediaList.item ? p.mediaList.item(0) : p.mediaList[0];
+    var mHtml = m.type === 'video' ? '<video src="'+m.url+'" muted></video>' : '<img src="'+m.url+'">';
+    var avg = p.reviews && p.reviews.length ? (p.reviews.reduce((a,b)=>a+Number(b.stars),0)/p.reviews.length).toFixed(1) : 'New';
+    var btns = ((!p.isDemo && p.oid === myId) || isAdmin) ? '<div class="owner-actions"><button onclick="editPro('+idx+')" class="btn btn-edit">Edit</button><button onclick="delPro('+idx+')" class="btn btn-delete">Delete</button></div>' : '';
+    box.innerHTML += '<div class="card">'+(p.isDemo?'<span class="demo-tag">DEMO</span>':'')+'<div class="media-preview" onclick="openGallery('+idx+')">'+mHtml+'<span class="media-count-tag">📸 '+p.mediaList.length+'</span></div><div class="card-header"><div class="tags-row"><span class="badge">'+p.category+'</span><span class="tehsil-tag">'+p.tehsil+'</span></div><div><span class="service-tag">'+p.serviceType+'</span><span class="rating-badge">⭐ '+avg+'</span></div><div class="profile-row"><img src="'+p.avatarUrl+'" class="avatar"><h3>'+p.name+'</h3></div><div class="location-text">📍 '+p.location+'</div><p>'+p.desc+'</p><div class="card-extra-btns"><button onclick="openGallery('+idx+')" class="btn-gallery">🖼️ Kaam ('+p.mediaList.length+')</button><button onclick="openReviews('+idx+')" class="btn-review">⭐ Reviews ('+(p.reviews?p.reviews.length:0)+')</button></div></div><div class="card-actions"><a href="whatsapp://send?phone='+p.phone+'" class="btn btn-whatsapp">WhatsApp</a><a href="tel:+'+p.phone+'" class="btn btn-call">Call</a></div>'+btns+'</div>';
   });
-  displayPros(filtered);
 }
-
-function deletePro(index) {
-  if (confirm("Kya aap waqai apni is profile ko delete karna chahte hain?")) {
-    professionals.splice(index, 1);
-    localStorage.setItem('chakwalProsV10', JSON.stringify(professionals));
-    displayPros(professionals);
-  }
+function openReviews(i) {
+  var p = pros[i]; document.getElementById('reviewProIndex').value = i; document.getElementById('reviewTitle').innerText = p.name + " Reviews";
+  var b = document.getElementById('reviewsList'); b.innerHTML = (p.reviews||[]).map(r=>'<div class="review-item"><strong>'+r.user+'</strong><span class="review-stars">'+'⭐'.repeat(r.stars)+'</span><p>'+r.comment+'</p></div>').join('') || '<p style="text-align:center;font-size:12px;">Koi review nahi.</p>';
+  document.getElementById('reviewModal').style.display = 'block';
 }
-
-function editPro(index) {
-  var p = professionals[index];
-  document.getElementById('editIndex').value = index;
-  document.getElementById('modalTitle').innerText = "Apni Profile Edit Karein";
-  document.getElementById('submitBtn').innerText = "Tabdeeli Save Karein";
-  document.getElementById('proName').value = p.name;
-  document.getElementById('proCategory').value = p.category;
-  document.getElementById('proTehsil').value = p.tehsil;
-  document.getElementById('proServiceType').value = p.serviceType;
-  document.getElementById('proLocation').value = p.location;
-  document.getElementById('proPhone').value = p.phone;
-  document.getElementById('proDesc').value = p.desc;
-  document.getElementById('proAvatar').required = false;
-  document.getElementById('proMedia').required = false;
-  document.getElementById('registerModal').style.display = 'block';
+function closeReviews() { document.getElementById('reviewModal').style.display = 'none'; }
+function submitReview(e) {
+  e.preventDefault(); var i = document.getElementById('reviewProIndex').value;
+  if(!pros[i].reviews) pros[i].reviews = [];
+  pros[i].reviews.unshift({user:document.getElementById('reviewerName').value, stars:document.getElementById('reviewStars').value, comment:document.getElementById('reviewComment').value});
+  localStorage.setItem('cPros13', JSON.stringify(pros)); document.getElementById('reviewForm').reset(); openReviews(i); showPros(pros);
 }
-
+function openGallery(i) {
+  var p = pros[i]; document.getElementById('galleryTitle').innerText = p.name;
+  document.getElementById('galleryItems').innerHTML = p.mediaList.map(m=>m.type==='video'?'<video src="'+m.url+'" controls playsinline></video>':'<img src="'+m.url+'">').join('');
+  document.getElementById('galleryModal').style.display = 'block';
+}
+function closeGallery() { document.getElementById('galleryModal').style.display = 'none'; }
+function filterPros() {
+  var s=document.getElementById('searchInput').value.toLowerCase(), t=document.getElementById('tehsilFilter').value, st=document.getElementById('serviceTypeFilter').value, c=document.getElementById('categoryFilter').value;
+  showPros(pros.filter(p=>(p.name.toLowerCase().includes(s)||p.desc.toLowerCase().includes(s)||p.location.toLowerCase().includes(s))&&(t==='All'||p.tehsil===t)&&(st==='All'||p.serviceType===st)&&(c==='All'||p.category===c)));
+}
+function delPro(i) { if(confirm("Delete karein?")){ pros.splice(i,1); localStorage.setItem('cPros13',JSON.stringify(pros)); showPros(pros); } }
+function editPro(i) {
+  var p=pros[i]; document.getElementById('editIndex').value=i; document.getElementById('proName').value=p.name; document.getElementById('proCategory').value=p.category; document.getElementById('proTehsil').value=p.tehsil; document.getElementById('proServiceType').value=p.serviceType; document.getElementById('proLocation').value=p.location; document.getElementById('proPhone').value=p.phone; document.getElementById('proDesc').value=p.desc; document.getElementById('registerModal').style.display='block';
+}
 function saveProfessional(e) {
-  e.preventDefault();
-  var idx = parseInt(document.getElementById('editIndex').value);
-  var avatarFile = document.getElementById('proAvatar').files.item(0);
-  var mediaFile = document.getElementById('proMedia').files.item(0);
-
-  function finishSave(avUrl, medUrl, medType) {
-    var data = {
-      id: idx === -1 ? 'pro_' + Date.now() : professionals[idx].id,
-      ownerId: idx === -1 ? myDeviceId : professionals[idx].ownerId,
-      isDemo: false,
-      name: document.getElementById('proName').value,
-      category: document.getElementById('proCategory').value,
-      tehsil: document.getElementById('proTehsil').value,
-      serviceType: document.getElementById('proServiceType').value,
-      location: document.getElementById('proLocation').value,
-      phone: document.getElementById('proPhone').value,
-      desc: document.getElementById('proDesc').value,
-      avatarUrl: avUrl,
-      mediaType: medType,
-      mediaUrl: medUrl
-    };
-    if (idx === -1) {
-      professionals.unshift(data);
-    } else {
-      professionals[idx] = data;
-    }
-    try {
-      localStorage.setItem('chakwalProsV10', JSON.stringify(professionals));
-    } catch (err) {
-      alert("File size bara hone ki wajah se temporary save hui hai. Cloud jodne par ye masla khatam ho jayega!");
-    }
-    displayPros(professionals);
-    closeModal();
-  }
-
-  var oldAv = idx !== -1 ? professionals[idx].avatarUrl : '';
-  var oldMed = idx !== -1 ? professionals[idx].mediaUrl : '';
-  var oldType = idx !== -1 ? professionals[idx].mediaType : 'image';
-
-  if (avatarFile && mediaFile) {
-    var r1 = new FileReader();
-    r1.onload = function(e1) {
-      var r2 = new FileReader();
-      r2.onload = function(e2) {
-        finishSave(e1.target.result, e2.target.result, mediaFile.type.startsWith('video') ? 'video' : 'image');
-      };
-      r2.readAsDataURL(mediaFile);
-    };
-    r1.readAsDataURL(avatarFile);
-  } else if (avatarFile) {
-    var r1 = new FileReader();
-    r1.onload = function(e1) { finishSave(e1.target.result, oldMed, oldType); };
-    r1.readAsDataURL(avatarFile);
-  } else if (mediaFile) {
-    var r2 = new FileReader();
-    r2.onload = function(e2) { finishSave(oldAv, e2.target.result, mediaFile.type.startsWith('video') ? 'video' : 'image'); };
-    r2.readAsDataURL(mediaFile);
-  } else {
-    finishSave(oldAv, oldMed, oldType);
-  }
+  e.preventDefault(); var idx=parseInt(document.getElementById('editIndex').value), avF=document.getElementById('proAvatar').files.item(0), mF=document.getElementById('proMedia').files;
+  var save = (av, ml) => {
+    var d = { id:Date.now(), oid:idx===-1?myId:pros[idx].oid, isDemo:false, name:document.getElementById('proName').value, category:document.getElementById('proCategory').value, tehsil:document.getElementById('proTehsil').value, serviceType:document.getElementById('proServiceType').value, location:document.getElementById('proLocation').value, phone:document.getElementById('proPhone').value, desc:document.getElementById('proDesc').value, avatarUrl:av, mediaList:ml, reviews:idx===-1?[]:pros[idx].reviews };
+    if(idx===-1) pros.unshift(d); else pros[idx]=d;
+    try{localStorage.setItem('cPros13',JSON.stringify(pros));}catch(err){} showPros(pros); closeModal();
+  };
+  var getM = (cb) => { if(!mF.length) return cb(idx!==-1?pros[idx].mediaList:[]); var res=[],c=0; for(var i=0;i<mF.length;i++){((f)=>{var r=new FileReader();r.onload=ev=>{res.push({type:f.type.startsWith('video')?'video':'image',url:ev.target.result});if(++c===mF.length)cb(res);};r.readAsDataURL(f);})(mF.item(i));} };
+  if(avF){ var r=new FileReader(); r.onload=ev=>getM(ml=>save(ev.target.result,ml)); r.readAsDataURL(avF); } else getM(ml=>save(idx!==-1?pros[idx].avatarUrl:'',ml));
 }
-
-function openModal() {
-  document.getElementById('editIndex').value = "-1";
-  document.getElementById('modalTitle').innerText = "Apni Profile / Shop Register Karein";
-  document.getElementById('submitBtn').innerText = "Profile Live Karein";
-  document.getElementById('proForm').reset();
-  document.getElementById('proAvatar').required = true;
-  document.getElementById('proMedia').required = true;
-  document.getElementById('registerModal').style.display = 'block';
-}
-function closeModal() { document.getElementById('registerModal').style.display = 'none'; }
-displayPros(professionals);
+function openModal() { document.getElementById('editIndex').value="-1"; document.getElementById('proForm').reset(); document.getElementById('registerModal').style.display='block'; }
+function closeModal() { document.getElementById('registerModal').style.display='none'; }
+showPros(pros);
+                                                                                                                                        
