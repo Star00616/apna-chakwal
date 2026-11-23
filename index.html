@@ -58,8 +58,9 @@
 <div class="modal" id="registerModal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <h3>Apni Profile / Shop Register Karein</h3>
-    <form id="proForm" onsubmit="addProfessional(event)">
+    <h3 id="modalTitle">Apni Profile / Shop Register Karein</h3>
+    <form id="proForm" onsubmit="saveProfessional(event)">
+      <input type="hidden" id="editIndex" value="-1">
       <input type="text" id="proName" required placeholder="Aapka Naam ya Dukaan ka Naam">
       
       <select id="proCategory" required>
@@ -102,15 +103,19 @@
       <textarea id="proDesc" rows="2" required placeholder="Apne kaam aur timing ki tafseel..."></textarea>
       
       <label style="font-size:12px; font-weight:bold;">1. Profile Photo ya Shop ki Tasveer (DP):</label>
-      <input type="file" id="proAvatar" accept="image/*" required>
+      <input type="file" id="proAvatar" accept="image/*">
       
       <label style="font-size:12px; font-weight:bold;">2. Apne Kaam ki Photo ya Video:</label>
-      <input type="file" id="proMedia" accept="image/*,video/*" required>
+      <input type="file" id="proMedia" accept="image/*,video/*">
       
-      <button type="submit" class="submit-btn">Profile Live Karein</button>
+      <button type="submit" class="submit-btn" id="submitBtn">Profile Live Karein</button>
     </form>
   </div>
 </div>
+
+<footer onclick="enableAdmin()" style="text-align:center; padding:25px 10px; color:#888; font-size:12px; cursor:pointer;">
+  © Apna Chakwal Pros - Zila Chakwal
+</footer>
 
 <script src="script.js"></script>
 </body>
